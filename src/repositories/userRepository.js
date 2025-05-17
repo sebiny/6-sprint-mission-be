@@ -9,7 +9,8 @@ async function findById(id) {
 }
 
 async function findByEmail(email) {
-  return await prisma.User.findUnique({
+  console.log("email", email);
+  return await prisma.user.findUnique({
     where: {
       email,
     },
@@ -20,8 +21,8 @@ async function save(user) {
   return prisma.user.create({
     data: {
       email: user.email,
-      name: user.name,
-      password: user.password,
+      nickName: user.nickName,
+      encryptedPassword: user.encryptedPassword,
     },
   });
 }
@@ -36,7 +37,7 @@ async function update(id, data) {
 }
 
 async function createOrUpdate(provider, providerId, email, name) {
-  return prisma.user.upsert({
+  return prisma.User.upsert({
     where: { provider, providerId },
     update: { email, name },
     create: { provider, providerId, email, name },

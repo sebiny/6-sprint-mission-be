@@ -5,8 +5,22 @@ import productService from "../services/productService.js";
 const productController = express.Router();
 
 productController.post("/", auth.verifyAccessToken, async (req, res, next) => {
-  const createdProduct = await productService.create(req.body);
-  return res.json(createdProduct);
+  try {
+    const userId = req.auth.userId;
+    const product = {
+      ...req.body,
+      ownerId: userId,
+    };
+    const createdProduct = await productService.create(product);
+    return res.json(createdProduct);
+  } catch (error) {
+    next(error);
+  }
+});
+
+productController.get("/", async (req, res) => {
+  const products = await productService.getAll();
+  return res.json(products);
 });
 
 productController.get("/:id", async (req, res) => {
